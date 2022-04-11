@@ -1,72 +1,86 @@
-def getNext(pole, inow, jnow):
-    try:
-        n = pole[inow][jnow]
-    except IndexError:
-        n = 1
-    return n
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-pole = [0] * 15
-for i in range(15):
-    pole[i] = [0] * 8
+XAXIS = "ABCDEFGHIJKLMNO"
+YAXIS = "12345678"
 
-pole[1][0] = 1
-pole[2][0] = 1
-pole[7][0] = 1
-pole[14][0] = 1
-
-pole[2][1] = 1
-pole[7][1] = 1
-pole[14][1] = 1
-
-pole[2][2] = 1
-pole[5][2] = 1
-pole[6][2] = 1
-pole[7][2] = 1
-pole[8][2] = 1
-pole[9][2] = 1
-pole[12][2] = 1
-
-pole[1][3] = 1
-pole[2][3] = 1
-pole[12][3] = 1
-
-pole[2][4] = 1
-pole[6][4] = 1
-pole[7][4] = 1
-pole[9][4] = 1
-pole[10][4] = 1
-pole[11][4] = 1
-pole[12][4] = 1
-pole[13][4] = 1
-
-pole[6][5] = 1
-pole[7][5] = 1
-pole[11][5] = 1
-
-pole[1][6] = 1
-pole[4][6] = 1
-pole[6][6] = 1
-pole[6][6] = 1
-pole[11][6] = 1
-
-pole[1][7] = 1
-pole[6][7] = 1
-pole[7][7] = 1
-pole[11][7] = 1
+FORBIDDEN = {
+    "B2", "D2", "F2", "H2", "J2", "L2", "N2",
+    "B3", "D3", "F3", "H3", "J3",
+    "B4", "D4", "F4", "H4", "L4", "M4", "N4",
+    "B5", "D5", "F5",
+    "B6", "D6", "K6", "L6", "M6", "N6",
+    "B7",
+    "J8", "K8", "L8", "M8", "N8"
+}
 
 
-count = 0
-for i in range(15):
-    for j in range(8):
-        if pole[i][j] == 1:
-            continue
-        inow = i
-        jnow = j
-        while getNext(pole, inow, jnow - 1) != 1:
-            jnow -= 1
-        while getNext(pole, inow - 1, jnow) != 1:
-            inow -= 1
-        if getNext(pole, inow, jnow - 1) == 0 and getNext(pole, inow - 1, jnow - 1) == 0:
-            count += 1
+def move(position, direction):
+    i = XAXIS.index(position[0])
+    j = YAXIS.index(position[1])
 
-print(count)
+    if direction == "left":
+        if i > 0:
+            return XAXIS[i - 1] + position[1]
+
+    elif direction == "right":
+        if i < len(XAXIS) - 1:
+            return XAXIS[i + 1] + position[1]
+
+    elif direction == "down":
+        if j < len(YAXIS) - 1:
+            return position[0] + YAXIS[j + 1]
+
+    elif direction == "up":
+        if j > 0:
+            return position[0] + YAXIS[j - 1]
+
+    return position
+
+
+def can_move(position, direction):
+    if position[0] == XAXIS[0] and direction == "left":
+        return False
+
+    elif position[0] == XAXIS[-1] and direction == "right":
+        return False
+
+    elif position[1] == YAXIS[0] and direction == "up":
+        return False
+
+    elif position[1] == YAXIS[-1] and direction == "down":
+        return False
+
+    new_position = move(position, direction)
+    return new_position not in FORBIDDEN
+
+
+def execute(start):
+    position = start
+    while can_move(position, "right"):
+        position = move(position, "right")
+
+    while can_move(position, "left"):
+        position = move(position, "left")
+
+    if can_move(position, "up"):
+        position = move(position, "up")
+    else:
+        return False
+
+    return can_move(position, "left")
+
+
+if __name__ == "__main__":
+    result = 0
+
+    for x in XAXIS:
+        for y in YAXIS:
+            current = x + y
+            if current in FORBIDDEN:
+                continue
+
+            if execute(current):
+                result += 1
+
+    print(result)

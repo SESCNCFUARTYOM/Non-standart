@@ -5,13 +5,13 @@ XAXIS = "ABCDEFGHIJKLMNO"
 YAXIS = "12345678"
 
 FORBIDDEN = {
-    "B2", "C2", "D2", "E2", "F2",
-    "D3", "E3", "F3", "G3",
-    "F4", "G4", "H4",
-    "H5", "I5", "L5", "M5",
-    "D6", "J6", "K6", "L6",
-    "B7", "H7", "I7", "J7", "K7",
-    "F8", "G8", "H8", "I8", "J8"
+    "B2", "C2", "D2", "E2", "I2", "J2", "K2", "L2", "M2",
+    "B3", "I3",
+    "B4", "F4", "H4", "I4", "K4", "N4",
+    "B5", "F5", "H5", "K5", "N5",
+    "B6", "F6", "H6", "K6", "N6", "O6",
+    "C7", "F7", "K7",
+    "C8", "K8"
 }
 
 
@@ -68,7 +68,7 @@ def execute(start):
     else:
         return False
 
-    return can_move(position, "left")
+    return can_move(position, "right")
 
 
 if __name__ == "__main__":
